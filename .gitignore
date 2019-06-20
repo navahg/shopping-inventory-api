@@ -1,0 +1,6 @@
+# DotNet binaries
+**/bin
+**/obj
+
+# IDE files
+.vscode
