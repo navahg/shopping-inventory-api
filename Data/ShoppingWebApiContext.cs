@@ -14,6 +14,5 @@ namespace ShoppingWebApi.Models
 
         public DbSet<ShoppingWebApi.Models.Product> Product { get; set; }
 
-        public DbSet<ShoppingWebApi.Models.Cart> Cart { get; set; }
     }
 }
