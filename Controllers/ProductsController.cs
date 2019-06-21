@@ -17,26 +17,6 @@ namespace ShoppingWebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Products/random
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDTO))]
-        [HttpGet]
-        [Route("random")]
-        public ActionResult<ProductDTO> GetRandomProduct()
-        {
-            var products = new ProductDTO()
-                           {
-                               Id = 1,
-                               Name = "TEST",
-                               Description = "",
-                               Price = 9.99,
-                               IsInStock = true,
-                               Category = "DUMMY",
-                               ImageUrl = ""
-                           };
-
-            return products;
-        }
-
         // GET: api/Products
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IQueryable<ProductDTO>))]
         [HttpGet]
