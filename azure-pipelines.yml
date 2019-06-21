@@ -21,7 +21,7 @@ steps:
   displayName: Build and push the app to Dockerhub
   inputs:
     containerRegistry: 'docker-hub-conn'
-    repository: 'shopping-api'
+    repository: 'raghavan16/shopping-api'
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
 
