@@ -10,10 +10,27 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+# Build and push the docker
+- task: Docker@2
+  displayName: Login to the Dockerhub
+  inputs:
+    containerRegistry: 'docker-hub-conn'
+    command: 'login'
+- task: Docker@2
+  displayName: Build and push the app to Dockerhub
+  inputs:
+    containerRegistry: 'docker-hub-conn'
+    repository: 'shopping-api'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+
+# Deploy on kubernetes
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'k8s-conn'
+    command: 'set'
+    arguments: 'image deployment/shopping-api shopping-api=raghavan16/shopping-api:$(Build.BuildId)'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
