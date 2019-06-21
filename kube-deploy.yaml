@@ -1,0 +1,18 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: shopping-api
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: shopping-api
+    spec:
+      containers:
+        - image: "raghavan16/shopping-api"
+          imagePullPolicy: Always
+          name: shopping-api
+          ports:
+            - containerPort: 8080
+
