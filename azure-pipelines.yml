@@ -25,6 +25,24 @@ steps:
     command: 'buildAndPush'
     Dockerfile: '**/Dockerfile'
 
+# Apply the changes
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'k8s-conn'
+    command: 'apply'
+    arguments: '-f $(Build.SourcesDirectory)/kube-deploy.yaml'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'k8s-conn'
+    command: 'apply'
+    arguments: '-f $(Build.SourcesDirectory)/kube-service.yaml'
+    secretType: 'dockerRegistry'
+    containerRegistryType: 'Azure Container Registry'
+
 # Deploy on kubernetes
 - task: Kubernetes@1
   inputs:
