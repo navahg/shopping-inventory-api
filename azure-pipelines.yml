@@ -63,7 +63,7 @@ steps:
 # Configure kubectl
 - task: AzureCLI@1
   inputs:
-    azureSubscription: 'Azure for Students($(SUB_ID))'
+    azureSubscription: 'Azure for Students(5e73cccf-ffa7-42e7-b2c5-edd17692dfe7)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az aks get-credentials --name csye7220-k8s --resource-group csye7220-k8s-resources'
 
