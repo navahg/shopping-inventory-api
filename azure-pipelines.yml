@@ -95,4 +95,4 @@ steps:
     scriptType: 'inline'
     inlineScript: |-
       export PATH=$PATH:~/.local/bin
-      aws s3 cp api-endpoint.json s3://raghavan-test-bucket
+      aws s3 cp ~/api-endpoint.json s3://raghavan-test-bucket
