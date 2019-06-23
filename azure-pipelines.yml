@@ -84,7 +84,7 @@ steps:
       done;
       echo "End point ready-" && echo $external_ip;
       touch ~/api-endpoint.json
-      echo "{\"ip\": $external_ip}" > ~/api-endpoint.json
+      echo "{\"ip\": \"$external_ip\"}" > ~/api-endpoint.json
 
 
 - task: AWSShellScript@1
