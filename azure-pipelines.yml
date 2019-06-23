@@ -60,6 +60,13 @@ steps:
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
 
+# Configure kubectl
+- task: AzureCLI@1
+  inputs:
+    azureSubscription: 'Azure for Students($(SUB_ID))'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az aks get-credentials --name csye7220-k8s --resource-group csye7220-k8s-resources'
+
 # Wait for the service to be created and update the IP
 - task: AWSShellScript@1
   inputs:
