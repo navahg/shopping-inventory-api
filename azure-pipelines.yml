@@ -34,6 +34,7 @@ steps:
 
 # Apply the changes
 - task: Kubernetes@1
+  displayName: Deploy the app
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'k8s-conn'
@@ -42,6 +43,7 @@ steps:
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
 - task: Kubernetes@1
+  displayName: Deploy the service
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'k8s-conn'
@@ -52,6 +54,7 @@ steps:
 
 # Deploy on kubernetes
 - task: Kubernetes@1
+  displayName: Update the image of the deployments
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'k8s-conn'
@@ -62,21 +65,34 @@ steps:
 
 # Configure kubectl
 - task: AzureCLI@1
+  displayName: Configure kubectl
   inputs:
     azureSubscription: 'Azure for Students(5e73cccf-ffa7-42e7-b2c5-edd17692dfe7)'
     scriptLocation: 'inlineScript'
     inlineScript: 'az aks get-credentials --name csye7220-k8s --resource-group csye7220-k8s-resources'
 
 # Wait for the service to be created and update the IP
+- task: CmdLine@2
+  displayName: Wait and fetch service endpoint
+  inputs:
+    script: |-
+      external_ip="";
+      while [ -z $external_ip ]; do
+        echo "Waiting for end point...";
+        external_ip=$(kubectl get svc shopping-api-lb --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}");
+        [ -z "$external_ip" ] && sleep 10;
+      done;
+      echo "End point ready-" && echo $external_ip;
+      touch ~/api-endpoint.json
+      echo "{\"ip\": $external_ip}" > ~/api-endpoint.json
+
+
 - task: AWSShellScript@1
+  displayName: Upload it to s3
   inputs:
     awsCredentials: 'aws-conn'
     regionName: 'us-east-1'
     scriptType: 'inline'
     inlineScript: |-
-      bash -c 'external_ip=""; while [ -z $external_ip ]; do echo "Waiting for end point..."; external_ip=$(kubectl get svc shopping-api-lb --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}"); [ -z "$external_ip" ] && sleep 10; done; echo "End point ready-" && echo $external_ip; export endpoint=$external_ip'
       export PATH=$PATH:~/.local/bin
-      touch api-endpoint.json
-      echo $endpoint
-      echo "{\"ip\": $endpoint}" > api-endpoint.json
       aws s3 cp api-endpoint.json s3://raghavan-test-bucket
